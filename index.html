@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            background-color: rgb(114, 184, 104);
+            max-width: 1300px;
+            margin: auto;
+        }
+
+        #conteudo {
+            border: 1px solid red;
+            float: left;
+            margin: 20px 10px 20px 20px;
+            width: 600px;
+            background-color: rgb(103, 221, 156);
+            border-radius: 10px;
+        }
+
+        #instruction {
+            border: 1px solid red;
+            float: left;
+            margin: 20px 10px 20px 20px;
+            width: 600px;
+            background-color: rgb(103, 221, 156);
+            border-radius: 10px;
+        }
+
+        .container {
+            border: 1px solid red;
+            margin: 5px;
+        }
+
+        .container1 {
+            border: 1px solid red;
+            margin: 5px;
+            text-align: center;
+        }
+
+        p {
+            margin: 6px;
+        }
+
+        button {
+            margin: 4px 0px 4px 0px;
+        }
+
+    </style>
+    <title>Manipulador de Arquivos</title>
+</head>
+
+<body>
+
+    <div id="conteudo"> <!-- Inicio Manipulador -->
+        <div class="container1">
+            <h1>Manipulador de Arquivo .txt</h1>
+        </div>
+
+        <div class="container">
+            <input type="file" id="fileinput">
+        </div>
+
+        <div class="container">
+            <textarea id="textarea" rows="5" cols="65"></textarea><br>
+        </div>
+
+
+        <div class="container1">
+            <button id="saveedit">Salvar Edição</button>
+        </div>
+
+        <div class="container1">
+            <p>Digite o nome do novo arquivo:</p>
+            <input type="text" id="nametxt"> <br>
+            <button id="savebutton">Salvar Novo</button>
+        </div>
+    </div><!-- fim do manipulador-->
+
+    <div id="instruction"> <!-- instruções de uso-->
+
+        <div class="container1">
+            <h2>Instruções de Uso:</h2>
+        </div>
+
+
+        <div class="container"> 
+            <table>
+                    <ul>
+                        <li>
+                            <h3>Uploading do arquivo e edição.</h3>
+                        </li>
+                    </ul>
+                <ol>
+                    <li>
+                        Para fazer upload de um arquivo .txt do seu dispositivo, clique no botao 'Escolher ficheiro'.
+                    </li>
+
+                    <li>
+                        Selecione o arquivo desejado em .txt .
+                    </li>
+
+                    <li>
+                        O conteúdo será exibido logo abaixo e poderá ser editado livremente.
+                    </li>
+                </ol>
+
+                
+                    <ul>
+                        <li>
+                            <h3>Salvando o arquivo</h3>
+                        </li>
+                    </ul>
+                <ol>
+                    <li> Para salvar o arquivo com o nome original, clique no botão 'Salvar Edição' <br> (download
+                        automatico)</li>
+                    <li> Para alterar o nome do arquivo digite na pequena caixa em branco e clique em 'Salvar Novo' <br>
+                        (download automatico) </li>
+                </ol>
+            </table>
+        </div> <!-- fim instruções-->
+
+    </div>
+
+    <script>
+        let currentFileName = '';
+        // Variável para armazenar o nome do arquivo original
+
+        // Função para ler o arquivo
+        document.getElementById('fileinput').addEventListener('change', function () {
+            // Vai pegar o arquivo selecionado pelo usuario pelo id 'fileinput' e
+            // Disparará o change e será realizado uma função a partir disto
+            const file = this.files[0];
+            // arquivo selecionado (primeiro arquivo)
+            if (file) {
+                // se um arquivo for selecionado, irá fazer uma ação.
+                currentFileName = file.name;
+                // Salva o nome original do arquivo
+
+
+                const reader = new FileReader();
+                // Objeto filereader é uma API do JS que permite fazer leitura do conteudo e processa-lo sem servidor
+                reader.onload = function (event) {
+                    // onload é quando o arquivo ja foi lido pelo codigo
+                    //  e define qual função será executada
+                    document.getElementById('textarea').value = event.target.result;
+                    // O arquivo será atribuido ao ID 'textarea' e é onde séra possivel ler dentro da caixa de texto feito no HTML
+                };
+                reader.readAsText(file);
+                // le o arquivo em formato de texto depois que passa pela função. (primeiro o sistema lê depois ele expoe o que foi lido)
+
+            }
+        });
+
+        // Função para salvar o conteúdo do textarea em um arquivo .txt
+        document.getElementById('saveedit').addEventListener('click', function () {
+            // Ao clicar no botao disparará o evento criado onde será realizado uma função
+            const text = document.getElementById('textarea').value;
+            // Pega o texto editado dentro da area de texto
+            const blob = new Blob([text], { type: 'text/plain' });
+            // Blob armazena grande quantidade de dados então foi utilizado para armazenar os conteudo e ao lado descreve o tipo de arquivo.
+            const link = document.createElement('a');
+            // Cria um elemento de link
+            link.href = URL.createObjectURL(blob);
+            // Cria uma URL para o arquivo para ser baixado
+            link.download = currentFileName || 'novoArquivo.txt';
+            // Utiliza o nome do proprio arquivo
+            link.click();
+            // Ao clicar inicia o download
+        });
+
+
+        // Função para salvar o conteúdo do textarea em um arquivo .txt como nome escolhido pelo usuario
+        document.getElementById('savebutton').addEventListener('click', function () {
+            const text = document.getElementById('textarea').value;
+            const blob = new Blob([text], { type: 'text/plain' });
+            const link = document.createElement('a');
+            // Cria um elemento de link
+            link.href = URL.createObjectURL(blob);
+            // Cria uma URL para o arquivo para ser baixado
+            link.download = document.getElementById('nametxt').value;
+            // Utiliza o nome digitado na caixa e caso nao digite é salvo como um padrão
+            link.click();
+            // Ao clicar inicia o download
+        });
+
+
+    </script>
+</body>
+
+</html>
